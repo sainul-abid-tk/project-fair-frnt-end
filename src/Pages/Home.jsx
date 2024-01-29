@@ -24,7 +24,7 @@ function Home() {
         <img  src={developer} alt="" />
       </div>
       </div>
-      </div>
+      </div> 
     </div>
     {/* All projects */}
     <div className='projects accordion mt-5'>
