@@ -4,7 +4,7 @@ import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { registerAPI } from "../Services/allAPIs";
+import { loginAPI, registerAPI } from "../Services/allAPIs";
 function Auth({ insideRegister }) {
   const navigate=useNavigate()
   const [userData, setUserData] = useState({
@@ -35,11 +35,39 @@ function Auth({ insideRegister }) {
       }
     }
   }
+  
+  const handleLogin=async(e)=>{
+    e.preventDefault()
+    const {email,password}=userData
+    if(!email || !password){
+      toast.info("Please fill the form completely!!!")
+    }
+    else{
+      try{
+        const result=await loginAPI({email,password})
+        console.log(result);
+        if(result.status===200){
+          sessionStorage.setItem("username",result.data.existingUser.username)
+          sessionStorage.setItem("token",result.data.token)
+          setUserData({email:"",password:""})
+          navigate('/')
+        }
+        else{
+          toast.warning(result.response.data)
+          setUserData({email:"",password:""})
+        }
+      }catch(err){
+        console.log(err);
+      }
+    }
+  }
+
   return (
     <div
       style={{ width: "100%", height: "100vh" }}
       className="d-flex justify-content-center align-items-center"
     >
+      <ToastContainer autoClose={3000} theme="colored" position="top-center"/>
       <div className="container w-75">
         <Link to={"/"}>
           <i class="fa-solid fa-arrow-left"></i> Back to Home
@@ -101,7 +129,6 @@ function Auth({ insideRegister }) {
                   {insideRegister ? (
                     <div>
                       <button onClick={e=>handleRegister(e)} className="btn btn-info mb-2">Register</button>
-                      <ToastContainer autoClose={3000} theme="colored" position="top-center"/>
                       <p>
                         Already have an account? Click here to{" "}
                         <Link className="text-warning fw-bolder" to={"/login"}>
@@ -111,7 +138,7 @@ function Auth({ insideRegister }) {
                     </div>
                   ) : (
                     <div>
-                      <button className="btn btn-info mb-2">Login</button>
+                      <button onClick={e=>handleLogin(e)} className="btn btn-info mb-2">Login</button>
                       <p>
                         New User? Click here to{" "}
                         <Link

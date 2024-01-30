@@ -1,13 +1,23 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import Header from '../Components/Header'
 import MyProjects from '../Components/MyProjects'
 import Profile from '../Components/Profile'
 function Dashboard() {
+  const [username,setusername]=useState("")
+
+  useEffect(()=>{
+    if(sessionStorage.getItem("username")){
+      setusername(sessionStorage.getItem("username"))
+    }
+    else{
+      setusername("")
+    }
+  },[])
   return (
     <>
     <Header insideDashboard/>
     <div style={{ marginTop: '60px' }} className="dashboard container">
-        <h1 className='fw-bolder'>Welcome <span className='text-warning'>User</span> </h1>
+        <h1 className='fw-bolder'>Welcome <span className='text-warning'>{username}</span> </h1>
         <div className="row mt-5">
           <div className="col-lg-8">
             <MyProjects />
