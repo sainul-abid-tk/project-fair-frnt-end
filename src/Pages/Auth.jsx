@@ -5,8 +5,10 @@ import Form from "react-bootstrap/Form";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { loginAPI, registerAPI } from "../Services/allAPIs";
+import Spinner from 'react-bootstrap/Spinner';
 function Auth({ insideRegister }) {
   const navigate=useNavigate()
+  const [loading,setLoading]=useState(false)
   const [userData, setUserData] = useState({
     username: "",
     email: "",
@@ -49,8 +51,12 @@ function Auth({ insideRegister }) {
         if(result.status===200){
           sessionStorage.setItem("username",result.data.existingUser.username)
           sessionStorage.setItem("token",result.data.token)
-          setUserData({email:"",password:""})
-          navigate('/')
+          setLoading(true)
+          setTimeout(() => {
+            setUserData({email:"",password:""})
+            navigate('/')
+            setLoading(false)
+          }, 2000);
         }
         else{
           toast.warning(result.response.data)
@@ -65,8 +71,12 @@ function Auth({ insideRegister }) {
   return (
     <div
       style={{ width: "100%", height: "100vh" }}
-      className="d-flex justify-content-center align-items-center"
+      className="d-flex justify-content-center align-items-center  position-relative "
     >
+      {loading&&<div style={{top:'50%',left:'50%'}} className="position-absolute z-1 overflow-hidden ">
+      <Spinner animation="border" variant="info" />
+      </div>
+      }
       <ToastContainer autoClose={3000} theme="colored" position="top-center"/>
       <div className="container w-75">
         <Link to={"/"}>
