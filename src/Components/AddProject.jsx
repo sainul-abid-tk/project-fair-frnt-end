@@ -4,6 +4,7 @@ import {Modal,Button} from 'react-bootstrap'
 import uploadImage from '../assets/images/uploadimage.png'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { addProjectAPI } from '../Services/allAPIs';
 function AddProject() {
   const [show, setShow] = useState(false);
   const [previewImage,setPreviewImage]=useState("")
@@ -43,27 +44,41 @@ function AddProject() {
     })
   };
 
-  const handleAddProject=()=>{
+  const handleAddProject= async()=>{
     const {title,language,overview,github,website,projectImage}=projectData
     if(!title || !language || !overview || !github || !website || !projectImage){
       toast.warning("please fill the form completely!!!")
     }
     else{
-      // api call 
+      // api call  req-Body
       const reqBody=new FormData()
       reqBody.append("title",title)
-      reqBody.append("language",language)
+      reqBody.append("languages",language)
       reqBody.append("overview",overview)
       reqBody.append("github",github)
       reqBody.append("website",website)
       reqBody.append("projectImage",projectImage)
-      // api call
+      // api call-reqHeader
       const token =sessionStorage.getItem("token")
       if(token){
         const reqHeader={
           "Content-Type":"multipart/form-data",
           "Authorization":`Bearer ${token}`
         }
+        // API call
+      try{ 
+        const result=await addProjectAPI(reqBody,reqHeader)
+        console.log(result);
+        if(result.status===200){
+          console.log(result.data);
+          handleClose()
+        }else{
+          toast.warning(result.response.data)
+        }
+       }catch(err){
+        console.log(err);
+       }
+
       }
     }
   }
