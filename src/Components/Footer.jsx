@@ -3,14 +3,14 @@ import { Link } from 'react-router-dom'
 
 function Footer() {
   return (
-    <div className='bg-success pt-1 pb-1 mt-5 '>
+    <div  className='bg-success pt-1 pb-1 mt-5 '>
     <div className='d-flex justify-content-between container mt-4 ' style={{height:'250px'}}>
       <div style={{width:'350px'}}>
         <h4 className='text-white fw-bold'><i class="fa-brands fa-stack-overflow fa-bounce"></i>&nbsp;Project Fair</h4>
         <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Deserunt tempora ipsam molestiae odio corporis corrupti eius. Consequatur eligendi odit accusantium laborum debitis architecto. Repellat iusto porro obcaecati reiciendis quibusdam dicta!</p>
       </div>
       <div style={{width:'200px'}}>
-        <h4>Links</h4>
+        <h4 >Links</h4>
           <p><Link to={'/'} style={{textDecoration:'none',color:'white'}}>Home</Link></p>
           <p><Link to={'/login'} style={{textDecoration:'none',color:'white'}}>Login</Link></p>
           <p><Link to={'/register'} style={{textDecoration:'none',color:'white'}}>Register</Link></p>

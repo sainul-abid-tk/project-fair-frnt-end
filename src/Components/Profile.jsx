@@ -7,6 +7,7 @@ function Profile() {
   const [open, setOpen] = useState(false);
   return (
     <>
+    
       <div className="d-flex rounded p-2 justify-content-between">
         <h3>Profile</h3>
         <button
