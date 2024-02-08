@@ -1,12 +1,34 @@
 import React,{useState,useEffect, useContext} from 'react'
 import AddProject from './AddProject'
 import EditProject from './EditProject'
-import { getUserProjectAPI } from '../Services/allAPIs'
-import { addProjectResponseContext } from '../ContextAPI/ContextShare'
+import { deleteProjectAPI, getUserProjectAPI } from '../Services/allAPIs'
+import { addProjectResponseContext, editProjectResponseContext } from '../ContextAPI/ContextShare'
+import { toast } from 'react-toastify'
 function MyProjects() {
   const {addProjectResponse,setAddProjectResponse}=useContext(addProjectResponseContext)
+  const {editProjectResponse,setEditProjectResponse}=useContext(editProjectResponseContext)
   const [allProjects,setAllProjects]=useState([])
   
+  const handleDeleteProject=async(id)=>{
+    const token=sessionStorage.getItem("token")
+    if(token){
+      const reqHeader={
+        "Content-Type":"application/json",
+        "Authorization":`Bearer ${token}`
+      }
+    try{
+      const result =await deleteProjectAPI(id,reqHeader)
+      if(result.status===200){
+        getUserProject()
+      }else{
+        toast.warning(result.response.data)
+      }
+    }catch(err){
+      console.log(err);
+    }
+  }
+}
+
   const getUserProject=async()=>{
     const token=sessionStorage.getItem("token")
     if(token){
@@ -28,7 +50,7 @@ function MyProjects() {
   
   useEffect(()=>{
     getUserProject()
-  },[addProjectResponse])
+  },[addProjectResponse,editProjectResponse])
   
   return (
     <div className='card shadow p-3'>
@@ -44,7 +66,7 @@ function MyProjects() {
             <EditProject  project={project}/>
             <a href={project.github} target='_blank' className='btn '>
             <i style={{height:'34px'}} class="fa-brands fa-github fa-2x overflow-hidden"></i></a>
-            <button className='btn'><i style={{height:'34px'}} className='fa-solid fa-trash fa-2x'></i></button>
+            <button onClick={()=>handleDeleteProject(project?._id)} className='btn'><i style={{height:'34px'}} className='fa-solid fa-trash fa-2x'></i></button>
           </div>
         </div>
       

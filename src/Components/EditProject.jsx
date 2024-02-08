@@ -1,11 +1,13 @@
-import React,{useEffect, useState} from 'react'
+import React,{useContext, useEffect, useState} from 'react'
 import {Modal,Button} from 'react-bootstrap'
 import uploadImage from '../assets/images/uploadimage.png'
 import { SERVER_URL } from '../Services/serverUrl';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import {  toast } from 'react-toastify';
+import { editProjectAPI } from '../Services/allAPIs';
+import {  editProjectResponseContext } from '../ContextAPI/ContextShare';
 
 function EditProject({project}) {
+  const {editProjectResponse,setEditProjectResponse}=useContext(editProjectResponseContext)
   console.log(project);
   const [show, setShow] = useState(false);
   const [projectData,setProjectData]=useState({
@@ -40,8 +42,8 @@ function EditProject({project}) {
     })
     setPreviewImage("")
   }
-  const handleUpdate=()=>{
-    const {title,language,overview,github,website,projectImage}=projectData
+  const handleUpdate=async()=>{
+    const {title,language,overview,github,website,projectImage,id}=projectData
     if(!title || !language || !overview || !github || !website){
       toast.warning("please fill the form completely!!!")
     }else{
@@ -56,25 +58,30 @@ function EditProject({project}) {
       // api call header
       const token =sessionStorage.getItem("token")
       if(token){
-        if(previewImage){
           const reqHeader={
-            "Content-Type":"multipart/form-data",
+            "Content-Type":previewImage?"multipart/form-data":"application/json",
             "Authorization":`Bearer ${token}`
           }
           // api call
-        }else{
-          const reqHeader={
-            "Content-Type":"application/json",
-            "Authorization":`Bearer ${token}`
+          try{
+            const result=await editProjectAPI(id,reqBody,reqHeader)
+            if(result.status===200){
+              toast.success(`Project "${result.data.title}" Updated Successfully....`)
+              handleClose()
+              setEditProjectResponse(result.data)
+            }
+            else{
+              toast.warning(result.response.data)
+            }
+          }catch(err){
+            console.log(err);
           }
-          // api call
-        }
     }
   }
 }
   return (
     <>
-    <ToastContainer autoClose={3000} theme="colored" position="top-center"/>
+   
     <button onClick={handleShow} className='btn'><i className='fa-solid fa-edit fa-2x overflow-hidden '></i></button>
     <Modal size='lg'
         show={show}
