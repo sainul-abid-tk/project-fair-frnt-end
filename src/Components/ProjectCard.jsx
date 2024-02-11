@@ -6,6 +6,7 @@ import { Col, Row } from "react-bootstrap";
 import { SERVER_URL } from "../Services/serverUrl";
 
 function ProjectCard({ project }) {
+  
   const [show, setShow] = useState(false);
 
   const handleClose = () => setShow(false);

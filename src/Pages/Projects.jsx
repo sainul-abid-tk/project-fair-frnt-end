@@ -4,6 +4,7 @@ import { Col, Row } from 'react-bootstrap'
 import ProjectCard from '../Components/ProjectCard'
 import { getAllProjectAPI } from '../Services/allAPIs'
 function Projects() {
+  const [searchKey,setSearchKey]=useState("")
   const [allProjects,setAllProjects]=useState([])
 
   const getAllProject=async()=>{
@@ -13,7 +14,7 @@ function Projects() {
         "Content-Type":"multipart/form-data",
         "Authorization":`Bearer ${token}`
       }
-      const result=await getAllProjectAPI(reqHeader)
+      const result=await getAllProjectAPI(searchKey,reqHeader)
     if(result.status===200){
       setAllProjects(result.data)
     }
@@ -26,14 +27,15 @@ function Projects() {
 
   useEffect(()=>{
     getAllProject()
-  },[])
+  },[searchKey])
+  
   return (
     <>
     <Header/>
     <div style={{marginTop:'100px',minHeight:'100vh'}} className='project-page-design container-fluid'>
     <div className="d-flex justify-content-between ">
       <h1>All Projects</h1>
-      <input style={{width:'300px'}} className='rounded ps-1' type="text" placeholder='Search Projects By Language Used'/>
+      <input style={{width:'300px'}} onChange={e=>setSearchKey(e.target.value)} className='rounded ps-1' type="text" placeholder='Search Projects By Language Used'/>
     </div>
     <Row className='mt-2'>
       {
