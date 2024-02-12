@@ -97,7 +97,7 @@ function Profile() {
                 alt="upload image"
               />:
               <img
-                className=""
+                className="border-0 rounded-circle"
                 width={"200px"}
                 height={"200px"}
                 src={preview?preview:`${SERVER_URL}/uploads/${existingImage}`}
